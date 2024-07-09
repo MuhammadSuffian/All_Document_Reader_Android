@@ -31,35 +31,35 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         val recyclerView = findViewById<RecyclerView>(R.id.recycleview)
-if(checkPermission()){
-    Log.d("TAG", "Permission True ")
-    fetchAllPdfAndDocFiles()
-    Log.d("TAG", "Permission True ")
-    val recyclerAdapter = RecyclerItemViewModel(this, dataobject)
-    recyclerView.layoutManager = GridLayoutManager(this, 2)
-    recyclerView.adapter = recyclerAdapter
-    if(dataobject.isNotEmpty()){
-        Toast.makeText(this, "Item  fetched: ${dataobject[0].name}", Toast.LENGTH_SHORT).show()
-    }
-    //Log.d("MainActivity", "DOC URIs: $")
-}
-        else{
-     requestPermission()
-            Toast.makeText(this,"Permission denied",Toast.LENGTH_SHORT).show()
+        if (checkPermission()) {
+            Log.d("TAG", "Permission True ")
+            fetchAllPdfAndDocFiles()
+            Log.d("TAG", "Permission True ")
+            val recyclerAdapter = RecyclerItemViewModel(this, dataobject)
+            recyclerView.layoutManager = GridLayoutManager(this, 2)
+            recyclerView.adapter = recyclerAdapter
+            if (dataobject.isNotEmpty()) {
+                Toast.makeText(this, "Item  fetched: ${dataobject[0].name}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            //Log.d("MainActivity", "DOC URIs: $")
+        } else {
+            requestPermission()
+            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
         }
 
     }
 
     private fun checkPermission(): Boolean {
         if (SDK_INT >= Build.VERSION_CODES.R) {
-            val pem=Environment.isExternalStorageManager()
-            Toast.makeText(this,"Permission:$pem",Toast.LENGTH_SHORT).show()
+            val pem = Environment.isExternalStorageManager()
+            Toast.makeText(this, "Permission:$pem", Toast.LENGTH_SHORT).show()
             return Environment.isExternalStorageManager()
-        }
-        else{
+        } else {
             return false
         }
     }
+
     private fun requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
@@ -73,9 +73,14 @@ if(checkPermission()){
                 startActivityForResult(intent, 2296)
             }
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                100
+            )
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 2296) {
@@ -83,16 +88,18 @@ if(checkPermission()){
                 if (Environment.isExternalStorageManager()) {
                     // perform action when allow permission success
                 } else {
-                    Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
     }
-    private fun fetchAllPdfAndDocFiles(){
+
+    private fun fetchAllPdfAndDocFiles() {
         val pdfFiles = ArrayList<Uri>()
-       // val docFiles = ArrayList<Uri>()
-      //  val xmlFiles = ArrayList<Uri>()
-      //  val htmlFiles = ArrayList<Uri>()
+        // val docFiles = ArrayList<Uri>()
+        //  val xmlFiles = ArrayList<Uri>()
+        //  val htmlFiles = ArrayList<Uri>()
 
         val projection = arrayOf(
             MediaStore.Files.FileColumns._ID,
@@ -100,7 +107,8 @@ if(checkPermission()){
             MediaStore.Files.FileColumns.MIME_TYPE
         )
 
-        val selection = "${MediaStore.Files.FileColumns.MIME_TYPE} = ? OR ${MediaStore.Files.FileColumns.MIME_TYPE} = ?"
+        val selection =
+            "${MediaStore.Files.FileColumns.MIME_TYPE} = ? OR ${MediaStore.Files.FileColumns.MIME_TYPE} = ?"
         val selectionArgs = arrayOf("application/pdf")
 
 
@@ -110,28 +118,31 @@ if(checkPermission()){
             MediaStore.Files.getContentUri("external")
         }
 
-        val cursor: Cursor? = contentResolver.query(queryUri, projection, selection, selectionArgs, null)
+        val cursor: Cursor? =
+            contentResolver.query(queryUri, projection, selection, selectionArgs, null)
 
         cursor?.use {
-            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID)
-            val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)
             while (cursor.moveToNext()) {
                 val Id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
-                val Name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-               val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,Id )
+                val Name =
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                val uri =
+                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
                 val model = itemViewModel(Id, Name, uri)
                 dataobject.add(model)
 
             }
-            val selectionArgs= arrayOf("application/msword")
-            val cursor: Cursor? = contentResolver.query(queryUri, projection, selection, selectionArgs, null)
+            val selectionArgs = arrayOf("application/msword")
+            val cursor: Cursor? =
+                contentResolver.query(queryUri, projection, selection, selectionArgs, null)
             cursor?.use {
-                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID)
-                val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)
                 while (cursor.moveToNext()) {
-                    val Id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
-                    val Name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                    val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,Id )
+                    val Id =
+                        cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+                    val Name =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                    val uri =
+                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
                     val model = itemViewModel(Id, Name, uri)
                     dataobject.add(model)
 
@@ -149,12 +160,13 @@ if(checkPermission()){
 //                    //docFiles.add(uri)
 //                }
 //           }
+            }
+
+            // Log or use the list of PDF and DOC files
+            Log.d("Files", "PDF Files: $pdfFiles")
+            //Log.d("Files", "DOC Files: $docFiles")
+            //return pdfFiles
         }
-
-        // Log or use the list of PDF and DOC files
-        Log.d("Files", "PDF Files: $pdfFiles")
-        //Log.d("Files", "DOC Files: $docFiles")
-        //return pdfFiles
     }
-}
 
+}
