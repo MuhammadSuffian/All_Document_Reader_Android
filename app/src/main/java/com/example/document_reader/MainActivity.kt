@@ -39,8 +39,7 @@ class MainActivity : AppCompatActivity() {
             recyclerView.layoutManager = GridLayoutManager(this, 2)
             recyclerView.adapter = recyclerAdapter
             if (dataobject.isNotEmpty()) {
-                Toast.makeText(this, "Item  fetched: ${dataobject[0].name}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Item  fetched: ${dataobject[0].name}", Toast.LENGTH_SHORT).show()
             }
             //Log.d("MainActivity", "DOC URIs: $")
         } else {
@@ -97,9 +96,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchAllPdfAndDocFiles() {
         val pdfFiles = ArrayList<Uri>()
-        // val docFiles = ArrayList<Uri>()
-        //  val xmlFiles = ArrayList<Uri>()
-        //  val htmlFiles = ArrayList<Uri>()
+         val docFiles = ArrayList<Uri>()
+          val xmlFiles = ArrayList<Uri>()
+          val htmlFiles = ArrayList<Uri>()
 
         val projection = arrayOf(
             MediaStore.Files.FileColumns._ID,
@@ -107,8 +106,7 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Files.FileColumns.MIME_TYPE
         )
 
-        val selection =
-            "${MediaStore.Files.FileColumns.MIME_TYPE} = ? OR ${MediaStore.Files.FileColumns.MIME_TYPE} = ?"
+        val selection = "${MediaStore.Files.FileColumns.MIME_TYPE} = ? OR ${MediaStore.Files.FileColumns.MIME_TYPE} = ?"
         val selectionArgs = arrayOf("application/pdf")
 
 
@@ -124,28 +122,21 @@ class MainActivity : AppCompatActivity() {
         cursor?.use {
             while (cursor.moveToNext()) {
                 val Id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
-                val Name =
-                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                val uri =
-                    ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
+                val Name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
                 val model = itemViewModel(Id, Name, uri)
                 dataobject.add(model)
-
             }
             val selectionArgs = arrayOf("application/msword")
             val cursor: Cursor? =
                 contentResolver.query(queryUri, projection, selection, selectionArgs, null)
             cursor?.use {
                 while (cursor.moveToNext()) {
-                    val Id =
-                        cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
-                    val Name =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                    val uri =
-                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
+                    val Id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
+                    val Name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
+                    val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
                     val model = itemViewModel(Id, Name, uri)
                     dataobject.add(model)
-
                 }
 //            while (cursor.moveToNext()) {
 //                val id = cursor.getLong(idColumn)
