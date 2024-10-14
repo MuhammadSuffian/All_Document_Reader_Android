@@ -12,14 +12,10 @@ class DocumentViewerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_document_viewer)
-
         webView = findViewById(R.id.webView)
         webView.webViewClient = WebViewClient()
-
-        // Get the URI from the intent
         val uri: Uri? = intent.getParcelableExtra("documentUri")
         uri?.let {
-            // Load the document in the WebView
             webView.loadUrl(it.toString())
         }
     }
