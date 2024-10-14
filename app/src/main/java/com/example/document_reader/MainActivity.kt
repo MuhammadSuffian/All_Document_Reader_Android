@@ -95,20 +95,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchAllPdfAndDocFiles() {
-        val pdfFiles = ArrayList<Uri>()
-         val docFiles = ArrayList<Uri>()
-          val xmlFiles = ArrayList<Uri>()
-          val htmlFiles = ArrayList<Uri>()
-
         val projection = arrayOf(
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DISPLAY_NAME,
             MediaStore.Files.FileColumns.MIME_TYPE
         )
 
-        val selection = "${MediaStore.Files.FileColumns.MIME_TYPE} = ? OR ${MediaStore.Files.FileColumns.MIME_TYPE} = ?"
+        val selection = "${MediaStore.Files.FileColumns.MIME_TYPE} = ?"
         val selectionArgs = arrayOf("application/pdf")
-
 
         val queryUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
@@ -116,48 +110,18 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Files.getContentUri("external")
         }
 
-        val cursor: Cursor? =
-            contentResolver.query(queryUri, projection, selection, selectionArgs, null)
+        val cursor: Cursor? = contentResolver.query(queryUri, projection, selection, selectionArgs, null)
 
         cursor?.use {
-            while (cursor.moveToNext()) {
-                val Id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
-                val Name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
-                val model = itemViewModel(Id, Name, uri)
+            while (it.moveToNext()) {
+                val id = it.getLong(it.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID))
+                val name = it.getString(it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME))
+                val uri = ContentUris.withAppendedId(queryUri, id)
+                val model = itemViewModel(id, name, uri)
                 dataobject.add(model)
             }
-            val selectionArgs = arrayOf("application/msword")
-            val cursor: Cursor? =
-                contentResolver.query(queryUri, projection, selection, selectionArgs, null)
-            cursor?.use {
-                while (cursor.moveToNext()) {
-                    val Id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
-                    val Name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                    val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Id)
-                    val model = itemViewModel(Id, Name, uri)
-                    dataobject.add(model)
-                }
-//            while (cursor.moveToNext()) {
-//                val id = cursor.getLong(idColumn)
-//                val id = cursor.getLong(idColumn)
-//                val mimeType = cursor.getString(mimeTypeColumn)
-//               val uri = ContentUris.withAppendedId(queryUri, id)
-//
-//                if (mimeType == "application/pdf") {
-//                    //pdfFiles.add(uri)
-//                   dataobject.add(itemViewModel(uri))
-//                } else if (mimeType == "application/msword") {
-//                    //docFiles.add(uri)
-//                }
-//           }
-            }
-
-            // Log or use the list of PDF and DOC files
-            Log.d("Files", "PDF Files: $pdfFiles")
-            //Log.d("Files", "DOC Files: $docFiles")
-            //return pdfFiles
         }
     }
+
 
 }

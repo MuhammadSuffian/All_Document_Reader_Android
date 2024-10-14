@@ -45,6 +45,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("com.github.ahmadullahpk:all-documents-reader:1.0.7")
 
 }

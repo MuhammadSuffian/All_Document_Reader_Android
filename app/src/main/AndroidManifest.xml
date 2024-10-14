@@ -21,9 +21,8 @@
         android:theme="@style/Theme.Document_reader"
         tools:targetApi="31">
         <activity
-            android:name=".DocumentViewerActivity"
+            android:name=".PdfViewerActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true">

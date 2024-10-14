@@ -2,6 +2,8 @@ package com.example.document_reader
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,8 +35,6 @@ class RecyclerItemViewModel(val context: Context, val arrContact: ArrayList<item
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("Tag", "Hello Suffian in Bind View Holder")
         holder.textView.text = arrContact[position].name
-
-        // Handle click on the item
         holder.itemView.setOnClickListener {
             val uri: Uri? = arrContact[position].uri
             if (uri != null) {
@@ -44,17 +44,13 @@ class RecyclerItemViewModel(val context: Context, val arrContact: ArrayList<item
             }
         }
     }
-
-    // Function to open the document using an intent
     private fun openDocumentInApp(uri: Uri) {
-//        val intent = Intent(context, DocumentViewerActivity::class.java).apply {
-//            putExtra("documentUri", uri)
-//        }
-//        context.startActivity(intent)
+        val intent = Intent(context, PdfViewerActivity::class.java).apply {
+            putExtra("documentUri", uri.toString())
+        }
+        context.startActivity(intent)
     }
 
-
-    // Helper function to get the MIME type from the URI
     private fun getMimeType(uri: Uri): String? {
         return context.contentResolver.getType(uri)
     }
