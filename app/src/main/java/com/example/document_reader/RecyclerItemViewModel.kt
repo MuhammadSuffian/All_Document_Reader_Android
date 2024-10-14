@@ -47,10 +47,10 @@ class RecyclerItemViewModel(val context: Context, val arrContact: ArrayList<item
 
     // Function to open the document using an intent
     private fun openDocumentInApp(uri: Uri) {
-        val intent = Intent(context, DocumentViewerActivity::class.java).apply {
-            putExtra("documentUri", uri)
-        }
-        context.startActivity(intent)
+//        val intent = Intent(context, DocumentViewerActivity::class.java).apply {
+//            putExtra("documentUri", uri)
+//        }
+//        context.startActivity(intent)
     }
 
 
